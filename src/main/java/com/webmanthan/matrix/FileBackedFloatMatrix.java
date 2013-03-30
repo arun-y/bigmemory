@@ -6,17 +6,31 @@ import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel.MapMode;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class FileBackedFloatMatrix {
 	
-	private final RandomAccessFile randomAccessFile;
-	private final int rows;
-	private final int columns;
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(FileBackedFloatMatrix.class);
 	
-	private long blockSize = 1 << 20; //512MiB
+	private final RandomAccessFile randomAccessFile;
+	public final int rows;
+	public final int columns;
+	
+	private long blockSize = 1 << 29; //512MiB - default minimum block size - can store up 2^27 floats
 	private int rowsPerBlock; 
 	private final MappedByteBuffer[] blockMapIndex;
 	
-	public FileBackedFloatMatrix(final String name, final int rows, final int columns) throws IOException {
+	/**
+	 * 
+	 * @param name
+	 * @param rows
+	 * @param columns
+	 * @param vargs
+	 * @throws IOException
+	 */
+	public FileBackedFloatMatrix(final String name, final int rows, final int columns, long...vargs) throws IOException {
 		this.rows = rows;
 		this.columns = columns;
 		
@@ -43,6 +57,8 @@ public class FileBackedFloatMatrix {
 			long remainingBlockSize = Math.min(blockSize, totalSize - offset); 
 			blockMapIndex[blockMapIndexCounter++] = randomAccessFile.getChannel().map(MapMode.READ_WRITE, offset, remainingBlockSize);
 		}
+		
+		LOGGER.info("Initialized BigFloatMatrix");
 	}
 	
 	public float get(final int row, final int column) {
