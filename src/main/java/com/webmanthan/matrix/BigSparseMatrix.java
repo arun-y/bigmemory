@@ -65,9 +65,8 @@ public class BigSparseMatrix {
 	}
 	
 	public final float get(final int row, final int column) {
-		int blockMapIndexCount = row / rowsPerBlock;
-		int blockOffset = row % rowsPerBlock;
-		return blockMapIndex[blockMapIndexCount].getFloat((blockOffset * columns + column) * 4);
+		//TODO:
+		return 0;
 	}
 	
 	public final void set(final int row, final int column, final float value) {
