@@ -9,4 +9,4 @@ A collection of file-backed mathematical data structures primarily meant for par
 2. Sets
 
 
-!{} [t.svg]
+![](t.svg)
